@@ -68,6 +68,22 @@ generator.convert({
 // 'name:"gareth"'
 ```
 
+Specify the `NOT` operator.
+```
+generator.convert({
+  $operands: [
+    { name: 'gareth' },
+    {
+      $operator: 'not',
+      $operands: [
+        { job: 'geek' }
+      ]
+    }
+  ]
+});
+// name:"gareth" AND NOT job:"geek"
+```
+
 
 ### Nested queries
 

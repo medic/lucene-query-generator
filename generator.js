@@ -15,7 +15,7 @@
     string: {
       suffix: '',
       format: function(str) {
-        return '"' + esc(str) + '"';
+        return '"' + escapeValue(str) + '"';
       }
     },
     int: {
@@ -41,18 +41,26 @@
     }
   };
 
-  var esc = function(str) {
-    var i = str.length;
-    var result = [];
-    while (i--) {
-      var c = str[i];
-      if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':' || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~' || c == '*' || c == '?' || c == '|' || c == '&') {
-        result[i] = '\\' + c;
-      } else {
-        result[i] = c;
-      }
+  var operators = {
+    and: {
+      symbol: 'AND'
+    },
+    or: {
+      symbol: 'OR'
+    },
+    not: {
+      symbol: 'NOT',
+      unary: true
     }
-    return result.join('');
+  };
+
+  var getType = function(field, schema) {
+    return types[schema[field] || 'string'];
+  };
+
+  var getOperator = function(code) {
+    var normalised = code && code.toLowerCase();
+    return (normalised && operators[normalised]) || operators.and;
   };
 
   var isString = function(obj) {
@@ -67,6 +75,30 @@
     return obj !== null && obj !== undefined;
   };
 
+  var escapeValue = function(str) {
+    var i = str.length;
+    var result = [];
+    while (i--) {
+      var c = str[i];
+      result[i] = (c === '"' ? '\\"' : c);
+    }
+    return result.join('');
+  };
+
+  var escapeKey = function(str) {
+    var i = str.length;
+    var result = [];
+    while (i--) {
+      var c = str[i];
+      if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':' || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~' || c == '*' || c == '?' || c == '|' || c == '&') {
+        result[i] = '\\' + c;
+      } else {
+        result[i] = c;
+      }
+    }
+    return result.join('');
+  };
+
   var createDisjunction = function(array) {
     if (array.length === 0) {
       return null;
@@ -75,10 +107,6 @@
       return array[0];
     }
     return '(' + array.join(' OR ') + ')';
-  };
-
-  var getType = function(field, schema) {
-    return types[schema[field] || 'string'];
   };
 
   /**
@@ -104,15 +132,12 @@
       return '[' + formatValue(type, value.$from) +
           ' TO ' + formatValue(type, value.$to) + ']';
     }
-    if (type.format) {
-      return type.format(value);
-    }
-    return value;
+    return type.format ? type.format(value) : value;
   };
 
   var extractTerms = function(obj, schema) {
     if (isString(obj)) {
-      return [ obj ];
+      return [ '"' + obj + '"' ];
     }
     var result = [];
     Object.keys(obj).forEach(function(field) {
@@ -120,7 +145,7 @@
         var type = getType(field, schema);
         var value = formatValue(type, obj[field]);
         if (value) {
-          result.push(esc(field) + type.suffix + ':' + value);
+          result.push(escapeKey(field) + type.suffix + ':' + value);
         }
       }
     });
@@ -132,7 +157,9 @@
     if (isArray(operands)) {
       operands.forEach(function(operand) {
         if (operand.$operands) {
-          results.push('(' + convert(operand) + ')');
+          var unary = getOperator(operand.$operator).unary;
+          var term = convert(operand);
+          results.push(unary ? term : '(' + term + ')');
         } else {
           results.push.apply(results, extractTerms(operand, schema));
         }
@@ -143,13 +170,16 @@
     return results;
   };
 
+  var joinOperands = function(operands, code) {
+    var operator = getOperator(code);
+    var prefix = operator.unary ? operator.symbol + ' ' : '';
+    return prefix + operands.join(' ' + operator.symbol + ' ');
+  };
+
   var convert = function(terms, options) {
-    terms.$operator = terms.$operator || 'AND';
-    terms.$operands = terms.$operands || [];
     var schema = (options && options.schema) || {};
-    var operands = extractOperands(terms.$operands, schema);
-    var operator = terms.$operator.toUpperCase();
-    return operands.join(' ' + operator + ' ');
+    var operands = extractOperands(terms.$operands || [], schema);
+    return joinOperands(operands, terms.$operator);
   };
 
   return {

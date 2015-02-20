@@ -97,11 +97,9 @@ exports['evaluates multiple nested query: w OR (x AND (y OR z))'] = function(tes
 
 exports['search all fields'] = function(test) {
   var actual = generator.convert({
-    $operands: [
-      'new'
-    ]
+    $operands: [ 'new' ]
   });
-  test.equals('new', actual);
+  test.equals('"new"', actual);
   test.done();
 };
 
@@ -112,7 +110,7 @@ exports['search all fields with query'] = function(test) {
       'new'
     ]
   });
-  test.equals('name:"gareth" AND new', actual);
+  test.equals('name:"gareth" AND "new"', actual);
   test.done();
 };
 
@@ -208,16 +206,26 @@ exports['value ranges'] = function(test) {
   test.done();
 };
 
-exports['escapes'] = function(test) {
-  var specialChars = ['+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\'];
+exports['escapes key'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'and',
+    $operands: operands = {
+      'KEY: + - && || ! ( ) { } [ ] ^ " ~ * ? : \\': 'VALUE'
+    }
+  });
+  var expected = 'KEY\\: \\+ \\- \\&\\& \\|\\| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\:"VALUE"';
+  test.equals(expected, actual);
+  test.done();
+};
+
+exports['escapes value'] = function(test) {
   var operands = {};
-  operands['KEY: ' + specialChars.join(' ')] = 'VALUE: ' + specialChars.join(' ');
+  operands['KEY'] = 'Val?u*e"x';
   var actual = generator.convert({
     $operator: 'and',
     $operands: operands
   });
-  var expected = 'KEY\\: \\+ \\- \\&\\& \\|\\| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\:"VALUE\\: \\+ \\- \\&\\& \\|\\| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\"';
-  test.equals(expected, actual);
+  test.equals('KEY:"Val?u*e\\"x"', actual);
   test.done();
 };
 
@@ -231,5 +239,56 @@ exports['handle null values'] = function(test) {
     ]
   });
   test.equals('name:"gareth"', actual);
+  test.done();
+};
+
+exports['not operator'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'not',
+    $operands: 'gareth'
+  });
+  test.equals('NOT "gareth"', actual);
+  test.done();
+};
+
+exports['not operator with field'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'not',
+    $operands: { name: 'gareth' }
+  });
+  test.equals('NOT name:"gareth"', actual);
+  test.done();
+};
+
+exports['not operator with and query'] = function(test) {
+  var actual = generator.convert({
+    $operands: [
+      { name: 'gareth' },
+      {
+        $operator: 'not',
+        $operands: [
+          { job: 'geek' }
+        ]
+      }
+    ]
+  });
+  test.equals('name:"gareth" AND NOT job:"geek"', actual);
+  test.done();
+};
+
+exports['not operator with or query'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'or',
+    $operands: [
+      { name: 'gareth' },
+      {
+        $operator: 'not',
+        $operands: [
+          { job: 'geek' }
+        ]
+      }
+    ]
+  });
+  test.equals('name:"gareth" OR NOT job:"geek"', actual);
   test.done();
 };
