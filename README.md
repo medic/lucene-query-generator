@@ -136,3 +136,9 @@ generator.convert(
 npm install
 npm test
 ```
+
+## Build Status
+
+Builds brought to you courtesy of [Travis CI](https://travis-ci.org/medic/lucene-query-generator).
+
+[![Build Status](https://travis-ci.org/medic/lucene-query-generator.svg)](https://travis-ci.org/medic/lucene-query-generator)
