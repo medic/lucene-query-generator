@@ -18,7 +18,7 @@ Convert an object into a string query.
 
 * `terms`: Object representing the query
 * `options` (optional): Object with the following
-** `schema` (optional): The field type mapping
+  * `schema` (optional): The field type mapping
 
 ## Examples
 
@@ -29,10 +29,6 @@ The simplest form of query
 ```
 generator.convert({ $operands: [ 'hello world!' ] }
 // 'hello world\!'
-```
-Returns
-```
-'hello world\!'
 ```
 
 ### Querying fielded data
@@ -69,7 +65,7 @@ generator.convert({
 generator.convert({
   $operands: [{ name: 'gareth' }, { job: null }]
 });
-// 'name:("gareth")'
+// 'name:"gareth"'
 ```
 
 
