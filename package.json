@@ -1,0 +1,34 @@
+{
+  "name": "lucene-query-generator",
+  "description": "Generate escaped lucene query strings",
+  "version": "0.1.0",
+  "main": "./generator.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medic/lucene-query-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/medic/lucene-query-generator/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "nodeunit": "latest"
+  },
+  "author": {
+    "name": "Gareth Bowen",
+    "email": "gareth@medicmobile.org",
+    "url": "http://medicmobile.org"
+  },
+  "keywords": [
+    "lucene",
+    "query",
+    "escape"
+  ],
+  "scripts": {
+    "test": "nodeunit tests"
+  }
+}
