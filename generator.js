@@ -161,7 +161,7 @@
       operands.forEach(function(operand) {
         if (operand.$operands) {
           var unary = getOperator(operand.$operator).unary;
-          var term = convert(operand);
+          var term = convert(operand, { schema: schema });
           results.push(unary ? term : '(' + term + ')');
         } else {
           results.push.apply(results, extractTerms(operand, schema));

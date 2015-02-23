@@ -338,3 +338,15 @@ exports['search all fields with wildcards'] = function(test) {
   test.equals('"som?thing * else"', actual);
   test.done();
 };
+
+exports['using not operator with typed field'] = function(test) {
+  var actual = generator.convert(
+  {
+    $operator: 'not',
+    $operands: { age: 0 }
+  }, {
+    schema: { age: 'int' }
+  });
+  test.equals('NOT age<int>:0', actual);
+  test.done();
+};
