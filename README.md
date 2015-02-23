@@ -106,7 +106,7 @@ generator.convert({
 
 ### Field types
 
-All field terms default to type `string`, which can be overridden by providing a schema. Available types are: `string`, `int`, `long`, `float`, `double`, `boolean`, `date`.
+All field terms default to type `string`, which can be overridden by providing a schema. Available types are: `string`, `int`, `long`, `float`, `double`, `boolean`, `date`. Dates can be either `Date` objects or ISO Strings.
 
 ```
 generator.convert(
@@ -114,16 +114,18 @@ generator.convert(
     $operands: [{
       name: 'gareth',
       seconds: 123456789,
-      dob: new Date(123456789)
+      dob: new Date(123456789),
+      dod: '2014-05-31T11:00:00.000Z'
     }]
   }, {
     schema: {
       seconds: 'long',
-      dob: 'date'
+      dob: 'date',
+      dod: 'date'
     }
   }
 );
-// name:"gareth" AND seconds<long>:123456789 AND dob<date>:"1970-01-02T10:17:36.789Z"
+// name:"gareth" AND seconds<long>:123456789 AND dob<date>:"1970-01-02T10:17:36.789Z" AND dod<date>:"2014-05-31T11:00:00.000Z"
 ```
 
 ### Range queries

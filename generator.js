@@ -36,7 +36,10 @@
     date: {
       suffix: '<date>',
       format: function(date) {
-        return '"' + date.toISOString() + '"';
+        if (Object.prototype.toString.call(date) === '[object Date]') {
+          date = date.toJSON();
+        }
+        return '"' + date + '"';
       }
     }
   };
@@ -144,7 +147,7 @@
       if (isDefined(obj[field])) {
         var type = getType(field, schema);
         var value = formatValue(type, obj[field]);
-        if (value) {
+        if (isDefined(value)) {
           result.push(escapeKey(field) + type.suffix + ':' + value);
         }
       }

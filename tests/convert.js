@@ -177,6 +177,44 @@ exports['includes field types'] = function(test) {
   test.done();
 };
 
+exports['handles falsy values'] = function(test) {
+  var actual = generator.convert(
+    {
+      $operands: [{
+        name: 'jenny',
+        age: 0,
+        male: false
+      }]
+    }, { schema: {
+      age: 'int',
+      male: 'boolean'
+    }}
+  );
+
+  var expected = 'name:"jenny" AND age<int>:0 AND male:false';
+  test.equals(expected, actual);
+  test.done();
+};
+
+exports['handles date formats'] = function(test) {
+  var actual = generator.convert(
+    {
+      $operands: [{
+        dob: new Date(123456789),
+        dod: '2014-05-31T11:00:00.000Z'
+      }]
+    }, { schema: {
+      dod: 'date',
+      dob: 'date'
+    }}
+  );
+
+  var expected = 'dob<date>:"1970-01-02T10:17:36.789Z" AND ' +
+                 'dod<date>:"2014-05-31T11:00:00.000Z"';
+  test.equals(expected, actual);
+  test.done();
+};
+
 exports['value ranges'] = function(test) {
   var actual = generator.convert(
     {
@@ -290,5 +328,13 @@ exports['not operator with or query'] = function(test) {
     ]
   });
   test.equals('name:"gareth" OR NOT job:"geek"', actual);
+  test.done();
+};
+
+exports['search all fields with wildcards'] = function(test) {
+  var actual = generator.convert({
+    $operands: [ 'som?thing * else' ]
+  });
+  test.equals('"som?thing * else"', actual);
   test.done();
 };
