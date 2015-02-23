@@ -1,7 +1,7 @@
 {
   "name": "lucene-query-generator",
   "description": "Generate escaped lucene query strings",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./generator.js",
   "repository": {
     "type": "git",
