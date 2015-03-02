@@ -13,10 +13,7 @@
 
   var types = {
     string: {
-      suffix: '',
-      format: function(str) {
-        return '"' + escapeValue(str) + '"';
-      }
+      suffix: ''
     },
     int: {
       suffix: '<int>'
@@ -78,16 +75,6 @@
     return obj !== null && obj !== undefined;
   };
 
-  var escapeValue = function(str) {
-    var i = str.length;
-    var result = [];
-    while (i--) {
-      var c = str[i];
-      result[i] = (c === '"' ? '\\"' : c);
-    }
-    return result.join('');
-  };
-
   var escapeKey = function(str) {
     var i = str.length;
     var result = [];
@@ -140,7 +127,7 @@
 
   var extractTerms = function(obj, schema) {
     if (isString(obj)) {
-      return [ '"' + obj + '"' ];
+      return [ obj ];
     }
     var result = [];
     Object.keys(obj).forEach(function(field) {

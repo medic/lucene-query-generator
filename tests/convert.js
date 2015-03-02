@@ -5,7 +5,7 @@ exports['accepts single operand'] = function(test) {
     $operator: 'and',
     $operands: { name: 'gareth' }
   });
-  test.equals('name:"gareth"', actual);
+  test.equals('name:gareth', actual);
   test.done();
 };
 
@@ -14,7 +14,7 @@ exports['accepts multiple operands in array'] = function(test) {
     $operator: 'or',
     $operands: [{ name: 'gareth' }, { name: 'milan' }]
   });
-  test.equals('name:"gareth" OR name:"milan"', actual);
+  test.equals('name:gareth OR name:milan', actual);
   test.done();
 };
 
@@ -23,7 +23,7 @@ exports['accepts multiple operands in object'] = function(test) {
     $operator: 'and',
     $operands: [{ name: 'gareth', job: 'geek' }]
   });
-  test.equals('name:"gareth" AND job:"geek"', actual);
+  test.equals('name:gareth AND job:geek', actual);
   test.done();
 };
 
@@ -31,7 +31,7 @@ exports['defaults to conjunction'] = function(test) {
   var actual = generator.convert({
     $operands: [{ name: 'gareth' }, { job: 'geek' }]
   });
-  test.equals('name:"gareth" AND job:"geek"', actual);
+  test.equals('name:gareth AND job:geek', actual);
   test.done();
 };
 
@@ -49,7 +49,7 @@ exports['evaluates nested query: x AND (y OR z)'] = function(test) {
       }
     ]
   });
-  test.equals('name:"gareth" AND (job:"geek" OR job:"musician")', actual);
+  test.equals('name:gareth AND (job:geek OR job:musician)', actual);
   test.done();
 };
 
@@ -67,7 +67,7 @@ exports['evaluates nested query: x OR (y AND z)'] = function(test) {
       }
     ]
   });
-  test.equals('job:"geek" OR (job:"musician" AND name:"gareth")', actual);
+  test.equals('job:geek OR (job:musician AND name:gareth)', actual);
   test.done();
 };
 
@@ -91,7 +91,7 @@ exports['evaluates multiple nested query: w OR (x AND (y OR z))'] = function(tes
       }
     ]
   });
-  test.equals('name:"gareth" OR (language:"javascript" AND (job:"geek" OR job:"musician"))', actual);
+  test.equals('name:gareth OR (language:javascript AND (job:geek OR job:musician))', actual);
   test.done();
 };
 
@@ -99,7 +99,7 @@ exports['search all fields'] = function(test) {
   var actual = generator.convert({
     $operands: [ 'new' ]
   });
-  test.equals('"new"', actual);
+  test.equals('new', actual);
   test.done();
 };
 
@@ -110,7 +110,7 @@ exports['search all fields with query'] = function(test) {
       'new'
     ]
   });
-  test.equals('name:"gareth" AND "new"', actual);
+  test.equals('name:gareth AND new', actual);
   test.done();
 };
 
@@ -120,7 +120,7 @@ exports['or shorthand'] = function(test) {
       { name: ['gareth','milan'] }
     ]
   });
-  test.equals('name:("gareth" OR "milan")', actual);
+  test.equals('name:(gareth OR milan)', actual);
   test.done();
 };
 
@@ -130,7 +130,7 @@ exports['or shorthand with one value'] = function(test) {
       { name: ['gareth'] }
     ]
   });
-  test.equals('name:"gareth"', actual);
+  test.equals('name:gareth', actual);
   test.done();
 };
 
@@ -141,7 +141,7 @@ exports['or shorthand with no values'] = function(test) {
       { job: 'geek' }
     ]
   });
-  test.equals('job:"geek"', actual);
+  test.equals('job:geek', actual);
   test.done();
 };
 
@@ -169,7 +169,7 @@ exports['includes field types'] = function(test) {
     }}
   );
 
-  var expected = 'name:"gareth" AND job:"geek" AND age<int>:55 AND ' +
+  var expected = 'name:gareth AND job:geek AND age<int>:55 AND ' +
                  'seconds<long>:123456789 AND height<float>:5.5 AND ' +
                  'position<double>:-5.123456789 AND male:true AND ' +
                  'dob<date>:"1970-01-02T10:17:36.789Z"';
@@ -191,7 +191,7 @@ exports['handles falsy values'] = function(test) {
     }}
   );
 
-  var expected = 'name:"jenny" AND age<int>:0 AND male:false';
+  var expected = 'name:jenny AND age<int>:0 AND male:false';
   test.equals(expected, actual);
   test.done();
 };
@@ -236,7 +236,7 @@ exports['value ranges'] = function(test) {
     }}
   );
 
-  var expected = 'name:["gareth" TO "milan"] AND age<int>:[55 TO 63] AND ' +
+  var expected = 'name:[gareth TO milan] AND age<int>:[55 TO 63] AND ' +
                  'seconds<long>:[0 TO 123456789] AND height<float>:[-3.5 TO 5.5] AND ' +
                  'position<double>:[-10.123555555 TO -5.123456789] AND ' +
                  'dob<date>:["1970-01-02T10:17:30.000Z" TO "1970-01-02T10:17:36.789Z"]';
@@ -251,19 +251,8 @@ exports['escapes key'] = function(test) {
       'KEY: + - && || ! ( ) { } [ ] ^ " ~ * ? : \\': 'VALUE'
     }
   });
-  var expected = 'KEY\\: \\+ \\- \\&\\& \\|\\| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\:"VALUE"';
+  var expected = 'KEY\\: \\+ \\- \\&\\& \\|\\| \\! \\( \\) \\{ \\} \\[ \\] \\^ \\" \\~ \\* \\? \\: \\\\:VALUE';
   test.equals(expected, actual);
-  test.done();
-};
-
-exports['escapes value'] = function(test) {
-  var operands = {};
-  operands['KEY'] = 'Val?u*e"x';
-  var actual = generator.convert({
-    $operator: 'and',
-    $operands: operands
-  });
-  test.equals('KEY:"Val?u*e\\"x"', actual);
   test.done();
 };
 
@@ -276,7 +265,7 @@ exports['handle null values'] = function(test) {
       { shoesize: undefined }
     ]
   });
-  test.equals('name:"gareth"', actual);
+  test.equals('name:gareth', actual);
   test.done();
 };
 
@@ -285,7 +274,7 @@ exports['not operator'] = function(test) {
     $operator: 'not',
     $operands: 'gareth'
   });
-  test.equals('NOT "gareth"', actual);
+  test.equals('NOT gareth', actual);
   test.done();
 };
 
@@ -294,7 +283,7 @@ exports['not operator with field'] = function(test) {
     $operator: 'not',
     $operands: { name: 'gareth' }
   });
-  test.equals('NOT name:"gareth"', actual);
+  test.equals('NOT name:gareth', actual);
   test.done();
 };
 
@@ -310,7 +299,7 @@ exports['not operator with and query'] = function(test) {
       }
     ]
   });
-  test.equals('name:"gareth" AND NOT job:"geek"', actual);
+  test.equals('name:gareth AND NOT job:geek', actual);
   test.done();
 };
 
@@ -327,7 +316,7 @@ exports['not operator with or query'] = function(test) {
       }
     ]
   });
-  test.equals('name:"gareth" OR NOT job:"geek"', actual);
+  test.equals('name:gareth OR NOT job:geek', actual);
   test.done();
 };
 
@@ -335,7 +324,7 @@ exports['search all fields with wildcards'] = function(test) {
   var actual = generator.convert({
     $operands: [ 'som?thing * else' ]
   });
-  test.equals('"som?thing * else"', actual);
+  test.equals('som?thing * else', actual);
   test.done();
 };
 
