@@ -33,7 +33,7 @@ generator.convert({ $operands: [ 'hello world' ] }
 
 ### Querying fielded data
 
-Query specific fields using key value pairs to represent the field name and desired value respectively. 
+Query specific fields using key value pairs to represent the field name and desired value respectively.
 
 Defaults to the `AND` operator.
 ```
@@ -84,6 +84,15 @@ generator.convert({
 // name:gareth AND NOT job:geek
 ```
 
+Unlike searching all fields, values will be escaped automatically.
+```
+generator.convert({
+  $operands: [
+    { name: 'gareth-bowen' }
+  ]
+});
+// name:"gareth-bowen"
+```
 
 ### Nested queries
 
