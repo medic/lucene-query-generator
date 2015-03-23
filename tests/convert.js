@@ -339,3 +339,19 @@ exports['using not operator with typed field'] = function(test) {
   test.equals('NOT age<int>:0', actual);
   test.done();
 };
+
+exports['wraps named fields'] = function(test) {
+  var actual = generator.convert({
+    $operands: { id: 'abc-123xyz' }
+  });
+  test.equals('id:"abc-123xyz"', actual);
+  test.done();
+};
+
+exports['escapes quotes in named fields'] = function(test) {
+  var actual = generator.convert({
+    $operands: { id: 'abc-123+"xyz"' }
+  });
+  test.equals('id:"abc-123+\\"xyz\\""', actual);
+  test.done();
+};
