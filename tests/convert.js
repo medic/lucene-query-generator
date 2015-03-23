@@ -342,9 +342,9 @@ exports['using not operator with typed field'] = function(test) {
 
 exports['wraps named fields'] = function(test) {
   var actual = generator.convert({
-    $operands: { id: 'abc-123xyz' }
+    $operands: { id: 'abc-123+xyz' }
   });
-  test.equals('id:"abc-123xyz"', actual);
+  test.equals('id:"abc-123+xyz"', actual);
   test.done();
 };
 
