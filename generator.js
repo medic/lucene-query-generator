@@ -15,11 +15,8 @@
     string: {
       suffix: '',
       format: function(str) {
-        str = str.replace(/"/g, '\\"');
-        if (str.match(/([\+\-&\|\!\(\)\{\}\[\]\^"~\*?:\\])/g)) {
-          return '"' + str + '"';
-        }
-        return str;
+        str = (str || '').toString().replace(/"/g, '\\"');
+        return '"' + str + '"';
       }
     },
     int: {
