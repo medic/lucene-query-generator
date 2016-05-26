@@ -139,7 +139,14 @@
     var result = [];
     Object.keys(obj).forEach(function(field) {
       if (isDefined(obj[field])) {
-        var type = getType(field, schema);
+        var type;
+        if (schema === 'noFormat') {
+          type = {
+            suffix: ''
+          };
+        } else {
+          type = getType(field, schema);
+        }
         var value = formatValue(type, obj[field]);
         if (isDefined(value)) {
           result.push(escapeKey(field) + type.suffix + ':' + value);
