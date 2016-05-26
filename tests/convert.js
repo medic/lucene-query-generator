@@ -40,7 +40,7 @@ exports['evaluates nested query: x AND (y OR z)'] = function(test) {
     $operator: 'and',
     $operands: [
       { name: 'gareth' },
-      {
+      { 
         $operator: 'or',
         $operands: [
           { job: 'geek' },
@@ -58,7 +58,7 @@ exports['evaluates nested query: x OR (y AND z)'] = function(test) {
     $operator: 'or',
     $operands: [
       { job: 'geek' },
-      {
+      { 
         $operator: 'and',
         $operands: [
           { job: 'musician' },
@@ -76,7 +76,7 @@ exports['evaluates multiple nested query: w OR (x AND (y OR z))'] = function(tes
     $operator: 'or',
     $operands: [
       { name: 'gareth' },
-      {
+      { 
         $operator: 'and',
         $operands: [
           { language: 'javascript' },
