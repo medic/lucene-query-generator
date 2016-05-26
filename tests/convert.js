@@ -344,7 +344,7 @@ exports['wraps named fields'] = function(test) {
   var actual = generator.convert({
     $operands: { id: 'abc-123+xyz' }
   });
-  test.equals('id:abc-123+xyz', actual);
+  test.equals('id:"abc-123+xyz"', actual);
   test.done();
 };
 
@@ -352,6 +352,6 @@ exports['escapes quotes in named fields'] = function(test) {
   var actual = generator.convert({
     $operands: { id: 'abc-123+"xyz"' }
   });
-  test.equals('id:abc-123+"xyz"', actual);
+  test.equals('id:"abc-123+\\"xyz\\""', actual);
   test.done();
 };
