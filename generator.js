@@ -62,7 +62,7 @@
   };
 
   var getType = function(field, schema) {
-    return types[schema[field] || 'string'];
+    return types[schema[field]] ? types[schema[field]]: {};
   };
 
   var getOperator = function(code) {
@@ -117,7 +117,7 @@
         if (isDefined(value)) {
           values.push(value);
         }
-      })
+      });
       return createDisjunction(values);
     }
     if (isDefined(value.$from) && isDefined(value.$to)) {
@@ -142,6 +142,9 @@
         var type = getType(field, schema);
         var value = formatValue(type, obj[field]);
         if (isDefined(value)) {
+          if (!type.suffix) {
+            type.suffix = '';
+          }
           result.push(escapeKey(field) + type.suffix + ':' + value);
         }
       }
