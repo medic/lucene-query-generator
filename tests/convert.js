@@ -355,3 +355,11 @@ exports['escapes quotes in named fields'] = function(test) {
   test.equals('id:"abc-123+\\"xyz\\""', actual);
   test.done();
 };
+
+exports['no formatting for partial search'] = function(test) {
+  var actual = generator.convert({
+    $operands: { id: 'che*' }
+  });
+  test.equals('id:che*', actual);
+  test.done();
+};
