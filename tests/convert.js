@@ -359,7 +359,7 @@ exports['escapes quotes in named fields'] = function(test) {
 exports['no formatting for partial search'] = function(test) {
   var actual = generator.convert({
     $operands: { id: 'che*' }
-  });
+  }, {schema: 'noFormat'});
   test.equals('id:che*', actual);
   test.done();
 };
