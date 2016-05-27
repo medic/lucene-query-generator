@@ -356,10 +356,13 @@ exports['escapes quotes in named fields'] = function(test) {
   test.done();
 };
 
-exports['no formatting for partial search'] = function(test) {
+exports['allow special characters for partial search'] = function(test) {
   var actual = generator.convert({
     $operands: { id: 'che*' }
-  }, {schema: 'noFormat'});
+  }, {schema: {
+          id: { type: 'string', allowSpecialCharacters: true }
+        }
+    });
   test.equals('id:che*', actual);
   test.done();
 };

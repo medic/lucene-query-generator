@@ -62,7 +62,15 @@
   };
 
   var getType = function(field, schema) {
-    return types[schema[field] || 'string'];
+    if (schema[field]) {
+      if (schema[field].type) {
+        return types[schema[field].type];
+      } else {
+        return types[schema[field]];
+      }
+    } else {
+      return types.string;
+    }
   };
 
   var getOperator = function(code) {
@@ -139,13 +147,10 @@
     var result = [];
     Object.keys(obj).forEach(function(field) {
       if (isDefined(obj[field])) {
-        var type;
-        if (schema === 'noFormat') {
-          type = {
-            suffix: ''
-          };
-        } else {
-          type = getType(field, schema);
+        var type = getType(field, schema);
+        // Dont format if allowSpecialCharacters is true
+        if (schema[field] && schema[field].allowSpecialCharacters) {
+          type.format = false;
         }
         var value = formatValue(type, obj[field]);
         if (isDefined(value)) {
