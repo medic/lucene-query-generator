@@ -65,12 +65,10 @@
     if (schema[field]) {
       if (schema[field].type) {
         return types[schema[field].type];
-      } else {
-        return types[schema[field]];
       }
-    } else {
-      return types.string;
+      return types[schema[field]];
     }
+    return types.string;
   };
 
   var getOperator = function(code) {

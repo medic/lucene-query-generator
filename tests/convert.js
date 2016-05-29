@@ -359,10 +359,14 @@ exports['escapes quotes in named fields'] = function(test) {
 exports['allow special characters for partial search'] = function(test) {
   var actual = generator.convert({
     $operands: { id: 'che*' }
-  }, {schema: {
-          id: { type: 'string', allowSpecialCharacters: true }
-        }
-    });
+  }, {
+    schema: {
+      id: {
+        type: 'string',
+        allowSpecialCharacters: true
+      }
+    }
+  });
   test.equals('id:che*', actual);
   test.done();
 };
