@@ -26,7 +26,7 @@ Convert an object into a string query.
 
 The simplest form of query
 
-```
+```js
 generator.convert({ $operands: [ 'hello world' ] }
 // 'hello world'
 ```
@@ -36,7 +36,8 @@ generator.convert({ $operands: [ 'hello world' ] }
 Query specific fields using key value pairs to represent the field name and desired value respectively.
 
 Defaults to the `AND` operator.
-```
+
+```js
 generator.convert({
   $operands: [{ name: 'gareth' }, { job: 'geek' }]
 });
@@ -44,7 +45,8 @@ generator.convert({
 ```
 
 Specify the `OR` operator.
-```
+
+```js
 generator.convert({
   $operator: 'OR',
   $operands: [{ name: 'gareth' }, { job: 'geek' }]
@@ -53,7 +55,8 @@ generator.convert({
 ```
 
 Create a disjunction on one field.
-```
+
+```js
 generator.convert({
   $operands: [{ name: ['gareth', 'milan'] }]
 });
@@ -61,7 +64,8 @@ generator.convert({
 ```
 
 `null` values will be ignored.
-```
+
+```js
 generator.convert({
   $operands: [{ name: 'gareth' }, { job: null }]
 });
@@ -69,7 +73,8 @@ generator.convert({
 ```
 
 Specify the `NOT` operator.
-```
+
+```js
 generator.convert({
   $operands: [
     { name: 'gareth' },
@@ -85,7 +90,8 @@ generator.convert({
 ```
 
 Unlike searching all fields, values will be escaped automatically.
-```
+
+```js
 generator.convert({
   $operands: [
     { name: 'gareth-bowen' }
@@ -96,7 +102,7 @@ generator.convert({
 
 ### Nested queries
 
-```
+```js
 generator.convert({
   $operator: 'and',
   $operands: [
@@ -117,7 +123,7 @@ generator.convert({
 
 All field terms default to type `string`, which can be overridden by providing a schema. Available types are: `string`, `int`, `long`, `float`, `double`, `boolean`, `date`. Dates can be either `Date` objects or ISO Strings.
 
-```
+```js
 generator.convert(
   {
     $operands: [{
@@ -137,11 +143,31 @@ generator.convert(
 // name:gareth AND seconds<long>:123456789 AND dob<date>:"1970-01-02T10:17:36.789Z" AND dod<date>:"2014-05-31T11:00:00.000Z"
 ```
 
+Escaping can be turned off for field values if you want to allow your users to be able to provide lucene expressions.
+
+```js
+generator.convert(
+  {
+    $operands: [{
+      name: 'gar?th'
+    }]
+  }, {
+    schema: {
+      name: {
+        type: 'string',
+        allowSpecialCharacters: true
+      }
+    }
+  }
+);
+// name:gar?th
+```
+
 ### Range queries
 
 Query for values matching a range with the `$from` and `$to` keys.
 
-```
+```js
 generator.convert(
   {
     $operands: [{
