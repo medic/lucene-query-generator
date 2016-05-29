@@ -355,3 +355,14 @@ exports['escapes quotes in named fields'] = function(test) {
   test.equals('id:"abc-123+\\"xyz\\""', actual);
   test.done();
 };
+
+exports['allow special characters for partial search'] = function(test) {
+  var actual = generator.convert({
+    $operands: { id: 'che*' }
+  }, {schema: {
+          id: { type: 'string', allowSpecialCharacters: true }
+        }
+    });
+  test.equals('id:che*', actual);
+  test.done();
+};
