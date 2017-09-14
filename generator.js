@@ -40,7 +40,7 @@
     date: {
       suffix: '<date>',
       format: function(date) {
-        if (Object.prototype.toString.call(date) === '[object Date]') {
+        if (isDate(date)) {
           date = date.toJSON();
         }
         return '"' + date + '"';
@@ -80,8 +80,16 @@
     return typeof obj == 'string' || obj instanceof String;
   };
 
+  var isDate = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Date]';
+  };
+
   var isArray = function(obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+
+  var isObject = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
   };
 
   var isDefined = function(obj) {
@@ -134,6 +142,9 @@
       }
       return '[' + formatValue(type, value.$from) +
           ' TO ' + formatValue(type, value.$to) + ']';
+    }
+    if (isObject(value)) {
+      return '(' + extractTerms(value, {}) + ')';
     }
     return type.format ? type.format(value) : value;
   };

@@ -370,3 +370,21 @@ exports['allow special characters for partial search'] = function(test) {
   test.equals('id:che*', actual);
   test.done();
 };
+
+exports['handle nested fields'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'and',
+    $operands: [ { story: { name: 'War and Peace' } } ]
+  });
+  test.equals('story:(name:War and Peace)', actual);
+  test.done();
+};
+
+exports['handle doubly nested fields'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'and',
+    $operands: [ { story: { author: { name: 'Leo Tolstoy' } } } ]
+  });
+  test.equals('story:(author:(name:Leo Tolstoy))', actual);
+  test.done();
+};
