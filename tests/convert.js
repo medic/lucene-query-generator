@@ -388,3 +388,12 @@ exports['handle doubly nested fields'] = function(test) {
   test.equals('story:(author:(name:Leo Tolstoy))', actual);
   test.done();
 };
+
+exports['nested fields default to AND'] = function(test) {
+  var actual = generator.convert({
+    $operator: 'and',
+    $operands: [ { story: { name: '"War and Peace"', author: '"Leo Tolstoy"' } } ]
+  });
+  test.equals('story:(name:"War and Peace" AND author:"Leo Tolstoy")', actual);
+  test.done();
+};

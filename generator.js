@@ -144,7 +144,9 @@
           ' TO ' + formatValue(type, value.$to) + ']';
     }
     if (isObject(value)) {
-      return '(' + extractTerms(value, {}) + ')';
+      var terms = extractTerms(value, {});
+      var joined = terms.join(' ' + operators.and.symbol + ' ');
+      return '(' + joined + ')';
     }
     return type.format ? type.format(value) : value;
   };
