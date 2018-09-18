@@ -10,11 +10,7 @@
   "bugs": {
     "url": "https://github.com/medic/lucene-query-generator/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "license": "Apache-2.0",
   "devDependencies": {
     "nodeunit": "latest"
   },
